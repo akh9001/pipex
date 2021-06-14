@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   outils.c                                           :+:      :+:    :+:   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 12:44:47 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/11 16:15:45 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/14 20:09:27 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int		wordcounter(const char *str, char c)
+int	wordcounter(const char *str, char c)
 {
-	int count;
-	int i;
+	int	count;
+	int	i;
 
 	if (!*str)
 		return (0);
@@ -32,9 +32,9 @@ int		wordcounter(const char *str, char c)
 	return (count);
 }
 
-int		ft_split_num(char **s)
+int	ft_split_num(char **s)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (s[i])
@@ -44,7 +44,7 @@ int		ft_split_num(char **s)
 
 char	**ft_free(char **ptr)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (ptr[i])
@@ -62,7 +62,8 @@ char	**ft_split(char const *s, char c)
 
 	if (!s)
 		return (NULL);
-	if (!(ptr = (char **)malloc((wordcounter(s, c) + 1) * sizeof(char *))))
+	ptr = (char **)malloc((wordcounter(s, c) + 1) * sizeof(char *));
+	if (!ptr)
 		return (NULL);
 	i = 0;
 	end = 0;
@@ -73,9 +74,9 @@ char	**ft_split(char const *s, char c)
 		start = end;
 		while (s[end] != c && s[end])
 			end++;
-		if (s[end - 1] != c)
-			if (!(ptr[i++] = ft_substr(s, start, end - start)))
-				return (ft_free(ptr));
+		ptr[i++] = ft_substr(s, start, end - start);
+		if (!ptr)
+			return (ft_free(ptr));
 	}
 	ptr[i] = NULL;
 	return (ptr);
