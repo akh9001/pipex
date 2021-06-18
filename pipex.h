@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 10:52:40 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/14 20:24:25 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/18 20:03:02 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 typedef struct s_cmd
 {
 	char			**args;
+	int				pid;
 	int				in;
 	int				out;
 	struct s_cmd	*next;
