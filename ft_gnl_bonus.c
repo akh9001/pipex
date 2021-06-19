@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gnl_bonus.c                                        :+:      :+:    :+:   */
+/*   ft_gnl_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/18 20:29:32 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/18 20:31:06 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/19 19:02:44 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char	*ft_strjoin1(char *s1, char const *s2)
 		return (NULL);
 	ls1 = ft_strlen(s1);
 	ls2 = ft_strlen(s2);
-	str = (char*)malloc((ls1 + ls2 + 1) * sizeof(char));
+	str = (char *)malloc((ls1 + ls2 + 1) * sizeof(char));
 	if (!str)
 		return (NULL);
 	ft_strlcpy(str, s1, ls1 + 1);
@@ -32,14 +32,15 @@ char	*ft_strjoin1(char *s1, char const *s2)
 	return (str);
 }
 
-int		checkrest(char **rest, char **line)
+int	checkrest(char **rest, char **line)
 {
-	char *tp;
-	char *tmp;
+	char	*tp;
+	char	*tmp;
 
 	if (*rest)
 	{
-		if ((tmp = ft_strchr(*rest, '\n')))
+		tmp = ft_strchr(*rest, '\n');
+		if (tmp)
 		{
 			*tmp = '\0';
 			if (!(*line = ft_strdup(*rest)))

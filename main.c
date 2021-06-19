@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 10:51:45 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/14 20:26:42 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/19 19:07:09 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int	ft_print_error(char *cmd, char *path)
 
 void	ft_is_file(int *fd, char *file, int type)
 {
+	printf("fd : %d\n", *fd);
 	if (type == RD)
 		*fd = open(file, O_RDONLY);
 	else if (type == WR)

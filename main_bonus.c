@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/18 15:15:27 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/18 21:59:20 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/19 19:10:57 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,59 +60,30 @@ void	ft_is_file(int *fd, char *file, int type)
 	}
 }
 
-void	ft_process(t_cmd *cmds, char **envp)
-{
-	int	pid;
-	int	status;
-
-	pid = fork();
-	if (!pid)
-	{
-		if (cmds->in)
-		{
-			dup2(cmds->in, 0);
-			close(cmds->in);
-		}
-		if (cmds->out != 1)
-		{
-			dup2(cmds->out, 1);
-			close(cmds->out);
-		}
-		ft_exec_cmd(envp, cmds->args);
-		exit(0);
-	}
-	else
-		waitpid(pid, &status, 0);
-}
-
-void	ft_herdox(t_data data, t_list *envl)
+void	ft_herdox(t_data data, char **envp)
 {
 	char	*line;
-	int		fd[2];
-	
-	
-	line = NULL;
-	pipe(fd);
-	while (get_next_line(0, &line) == 1)
-	{
-		write(fd[1], line, ft_strlen(line));
-		if (ft_strncmp(data.file1, line, ft_strlen(data.file1)))
-			break;
-	}
-	close(fd[1]);
-	ft_pipe(data, envl, APND, fd[0]);
-}
-// void	ft_set_ios(int *io, t_data data)
-// {
-// 	t_cmd	*cmd;
+	int		fd;
 
-// 	cmd = data.cmds;
-// 	ft_is_file(&fd_in, data.file1, RD);
-// 	data.cmds->in = fd_in;
-// 	data.cmds->out = fd[1];
-// 	cmd = ft_lstlast(data.cmds);
-	
-// }
+	line = NULL;
+	fd = open("/tmp/file", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	while (1)
+	{
+		ft_putstr_fd("heredoc> ", 1);
+		get_next_line(0, &line);
+		if (!ft_strncmp(data.file1, line, ft_strlen(data.file1)))
+		{
+			free(line);
+			close(fd);
+			break ;
+		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+	ft_pipe(data, envp, APND);
+	unlink("/tmp/file");
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -121,38 +92,21 @@ int	main(int argc, char **argv, char **envp)
 	int		ret;
 	int		fd_in;
 	int		fd_out;
-	t_list	*envl;
 
-	// check_args(argc);
-    if (argc < 5)
-    {
-        ft_putendl_fd("Error: Incorrect arguments number!", 2);
-		exit(-1);
-    }
-	envl = ft_arr_to_list(envp);
-    if (argc == 6 && !ft_strncmp(argv[1], "here_doc", 9))
+	if (argc < 5)
 	{
-		data = ft_fil_struct(argc - 1, argv + 2);
-		ft_herdox(data, envl);
+		ft_putendl_fd("Error: Incorrect arguments number!", 2);
+		exit(-1);
+	}
+	if (argc >= 6 && !ft_strncmp(argv[1], "here_doc", 9))
+	{
+		data = ft_fil_struct(argc - 2, argv + 2);
+		ft_herdox(data, envp);
 	}
 	else
 	{
 		data = ft_fil_struct(argc - 1, argv + 1);
-		ft_pipe(data, envl, WR, -18);
+		ft_pipe(data, envp, WR);
 	}
-	// ret = pipe(fd);
-	// if (ret < 0)
-	// 	ft_print_error("Error :", NULL);
-	// ft_is_file(&fd_in, data.file1, RD);
-	// data.cmds->in = fd_in;
-	// data.cmds->out = fd[1];
-	
-	// ft_is_file(&fd_out, data.file2, WR);
-	// data.cmds->next->in = fd[0];
-	// data.cmds->next->out = fd_out;
-	// ft_process(data.cmds, envp);
-	// close(fd[1]);
-	// ft_process(data.cmds->next, envp);
-	// close(fd[0]);
 	return (0);
 }
