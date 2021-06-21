@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/13 13:52:51 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/19 18:28:27 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/20 19:38:41 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,21 @@ int	ft_envl_size(t_list *lst)
 		lst = lst->next;
 	}
 	return (i);
+}
+
+void	ft_lst_free(t_list **head)
+{
+	t_list	*current;
+	t_list	*next;
+
+	current = *head;
+	while (current)
+	{
+		next = current->next;
+		free(current->env);
+		free(current->value);
+		free(current);
+		current = next;
+	}
+	*head = NULL;
 }

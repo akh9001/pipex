@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/18 15:15:27 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/19 19:10:57 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/21 18:49:06 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	ft_print_error(char *cmd, char *path)
 	return (1);
 }
 
-void	ft_is_file(int *fd, char *file, int type)
+void	ft_is_file(int *fd, char *file, int type, int option)
 {
 	if (type == RD)
 		*fd = open(file, O_RDONLY);
@@ -56,33 +56,36 @@ void	ft_is_file(int *fd, char *file, int type)
 	if (*fd == -1)
 	{
 		ft_print_error(file, NULL);
-		exit(-1);
+		if (option)
+			exit(1);
 	}
 }
 
-void	ft_herdox(t_data data, char **envp)
+int	ft_herdox(t_data data, char **envp)
 {
 	char	*line;
 	int		fd;
+	int		ret;
 
 	line = NULL;
 	fd = open("/tmp/file", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	line = malloc(2048);
 	while (1)
 	{
 		ft_putstr_fd("heredoc> ", 1);
-		get_next_line(0, &line);
+		ret = read(0, line, 2048);
+		line[ret] = 0;
 		if (!ft_strncmp(data.file1, line, ft_strlen(data.file1)))
 		{
-			free(line);
 			close(fd);
 			break ;
 		}
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
+		write(fd, line, ret);
 	}
-	ft_pipe(data, envp, APND);
+	free(line);
+	ret = ft_pipe(data, envp, APND);
 	unlink("/tmp/file");
+	return (ret);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -101,12 +104,13 @@ int	main(int argc, char **argv, char **envp)
 	if (argc >= 6 && !ft_strncmp(argv[1], "here_doc", 9))
 	{
 		data = ft_fil_struct(argc - 2, argv + 2);
-		ft_herdox(data, envp);
+		ret = ft_herdox(data, envp);
 	}
 	else
 	{
 		data = ft_fil_struct(argc - 1, argv + 1);
-		ft_pipe(data, envp, WR);
+		ret = ft_pipe(data, envp, WR);
 	}
-	return (0);
+	ft_cmds_free(&data.cmds);
+	return (ret);
 }

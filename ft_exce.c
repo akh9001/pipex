@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 12:43:14 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/14 20:20:02 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/21 19:23:27 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,48 +51,71 @@ char	*ft_get_cmd_path(char *cmd, char *pathenv)
 void	ft_continue_exec(char *path, char **envp, char **args)
 {
 	int	id;
+	int	status;
 
 	if (!path)
 	{
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(args[0], 2);
 		ft_putendl_fd(": command not found", 2);
+		system("leaks pipex");
+		exit(127);
 	}
 	else
 	{
-		id = fork();
-		if (!id)
-		{
-			execve(path, args, envp);
-			ft_putendl_fd(strerror(errno), 2);
-			exit(0);
-		}
-		else
-		{
-			wait(NULL);
-			free(path);
-		}
+		execve(path, args, envp);
+		ft_putendl_fd(strerror(errno), 2);
+		if (errno == 21)
+			exit(1);
+		if (errno == 13)
+			exit(126);
+		if (errno == 2)
+			exit(127);
 	}
 }
 
-void	ft_exec_cmd(char **envp, char **args)
+char	ft_search_path(char **envp, char **args)
 {
 	t_list	*pathenv;
 	t_list	*envl;
 	char	*path;
 
-	envl = ft_arr_to_list(envp);
 	path = NULL;
+	envl = ft_arr_to_list(envp);
+	pathenv = ft_find_node(envl, "PATH");
+	if (pathenv)
+		path = ft_get_cmd_path(args[0], pathenv->value);
+	else
+		path = ft_get_cmd_path(args[0], ".");
+	ft_lst_free(&envl);
+	return (path);
+}
+
+void	ft_exec_cmd(char **envp, char **args)
+{
+	char	*path;
+	int		k;
+
+	path = NULL;
+	k = 99;
 	if (**args == '/' || !ft_strncmp(*args, "./", 2)
 		|| !ft_strncmp(*args, "../", 3))
-		path = *args;
-	else
 	{
-		pathenv = ft_find_node(envl, "PATH");
-		if (pathenv)
-			path = ft_get_cmd_path(args[0], pathenv->value);
-		else
-			path = ft_get_cmd_path(args[0], ".");
+		path = ft_strdup(*args);
+		if (read(open(path, O_RDONLY), NULL, 0) < 0)
+		{
+			if (errno == 21)
+			{
+				ft_putstr_fd(path, 2);
+				ft_putendl_fd(" : is a directory", 2);
+				k = 0;
+			}
+		}
 	}
-	ft_continue_exec(path, envp, args);
+	else
+		path = ft_search_path(envp, args);
+	if (k)
+		ft_continue_exec(path, envp, args);
+	if (path)
+		free(path);
 }

@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 12:43:14 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/19 18:38:08 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/21 19:29:29 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,24 +66,48 @@ void	ft_continue_exec(char *path, char **envp, char **args)
 	}
 }
 
-void	ft_exec_cmd(char **envp, char **args)
+char	*ft_search_path(char **envp, char **args)
 {
 	t_list	*pathenv;
 	t_list	*envl;
 	char	*path;
 
-	envl = ft_arr_to_list(envp);
 	path = NULL;
+	envl = ft_arr_to_list(envp);
+	pathenv = ft_find_node(envl, "PATH");
+	if (pathenv)
+		path = ft_get_cmd_path(args[0], pathenv->value);
+	else
+		path = ft_get_cmd_path(args[0], ".");
+	ft_lst_free(&envl);
+	return (path);
+}
+
+void	ft_exec_cmd(char **envp, char **args)
+{
+	char	*path;
+	int		k;
+
+	path = NULL;
+	k = 99;
 	if (**args == '/' || !ft_strncmp(*args, "./", 2)
 		|| !ft_strncmp(*args, "../", 3))
-		path = *args;
-	else
 	{
-		pathenv = ft_find_node(envl, "PATH");
-		if (pathenv)
-			path = ft_get_cmd_path(args[0], pathenv->value);
-		else
-			path = ft_get_cmd_path(args[0], ".");
+		path = ft_strdup(*args);
+		if (read(open(path, O_RDONLY), NULL, 0) < 0)
+		{
+			if (errno == 21)
+			{
+				ft_putstr_fd(path, 2);
+				ft_putendl_fd(" : is a directory", 2);
+				k = 0;
+			}
+		}
 	}
-	ft_continue_exec(path, envp, args);
+	else
+		path = ft_search_path(envp, args);
+	if (k)
+		ft_continue_exec(path, envp, args);
+	if (path)
+		free(path);
 }

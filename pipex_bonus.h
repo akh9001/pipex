@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/18 15:16:46 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/19 19:08:20 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/21 18:59:13 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,15 @@ typedef struct s_list
 	struct s_list	*next;
 }					t_list;
 
-void				ft_pipe(t_data data, char **envp, int wr);
-int					get_next_line(int fd, char **line);
+typedef struct s_help
+{
+	size_t			end;
+	size_t			start;
+	size_t			i;
+	char			**ptr;
+}					t_help;
+
+int					ft_pipe(t_data data, char **envp, int wr);
 char				*ft_strchr(const char *s, int c);
 char				*ft_strdup(const char *s1);
 void				ft_bzero(void *s, size_t n);
@@ -72,7 +79,9 @@ t_list				*ft_arr_to_list(char **str);
 t_list				*ft_find_node(t_list *lst, char *content);
 char				**ft_list_to_arr(t_list *lst);
 void				check_args(int argc);
-void				ft_is_file(int *fd, char *file, int type);
+void				ft_is_file(int *fd, char *file, int type, int option);
 void				ft_exec_cmd(char **envp, char **args);
+void				ft_lst_free(t_list **head);
+void				ft_cmds_free(t_cmd **head);
 
 #endif

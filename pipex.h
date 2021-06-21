@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 10:52:40 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/18 20:03:02 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/21 18:27:26 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ typedef struct s_cmd
 {
 	char			**args;
 	int				pid;
-	int				in;
-	int				out;
 	struct s_cmd	*next;
 }					t_cmd;
 
@@ -45,6 +43,14 @@ typedef struct s_list
 	char			*value;
 	struct s_list	*next;
 }					t_list;
+
+typedef struct s_help
+{
+	size_t			end;
+	size_t			start;
+	size_t			i;
+	char			**ptr;
+}					t_help;
 
 t_cmd				*ft_lstnew(char **args);
 void				ft_lstadd_back(t_cmd **alst, t_cmd *new);
@@ -69,7 +75,12 @@ t_list				*ft_arr_to_list(char **str);
 t_list				*ft_find_node(t_list *lst, char *content);
 char				**ft_list_to_arr(t_list *lst);
 void				check_args(int argc);
-void				ft_is_file(int *fd, char *file, int type);
+void				ft_is_file(int *fd, char *file, int type, int option);
 void				ft_exec_cmd(char **envp, char **args);
+char				*ft_strdup(const char *s1);
+void				ft_lst_free(t_list **head);
+void				ft_cmds_free(t_cmd **head);
+int					ft_pipe(t_data data, char **envp, int wr);
+int					ft_print_error(char *cmd, char *path);
 
 #endif

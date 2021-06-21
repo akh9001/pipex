@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 12:44:47 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/19 18:25:32 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/21 18:37:24 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,29 +55,29 @@ char	**ft_free(char **ptr)
 
 char	**ft_split(char const *s, char c)
 {
-	size_t	end;
-	size_t	start;
-	size_t	i;
-	char	**ptr;
+	t_help	hlp;
 
 	if (!s)
 		return (NULL);
-	ptr = (char **)malloc((wordcounter(s, c) + 1) * sizeof(char *));
-	if (!ptr)
+	hlp.ptr = (char **)malloc((wordcounter(s, c) + 1) * sizeof(char *));
+	if (!hlp.ptr)
 		return (NULL);
-	i = 0;
-	end = 0;
-	while (s[end])
+	hlp.i = 0;
+	hlp.end = 0;
+	while (s[hlp.end])
 	{
-		while (s[end] == c)
-			end++;
-		start = end;
-		while (s[end] != c && s[end])
-			end++;
-		ptr[i++] = ft_substr(s, start, end - start);
-		if (!ptr)
-			return (ft_free(ptr));
+		while (s[hlp.end] == c)
+			hlp.end++;
+		hlp.start = hlp.end;
+		while (s[hlp.end] != c && s[hlp.end])
+			hlp.end++;
+		if (s[hlp.end - 1] != c)
+		{
+			hlp.ptr[hlp.i++] = ft_substr(s, hlp.start, hlp.end - hlp.start);
+			if (!hlp.ptr)
+				return (ft_free(hlp.ptr));
+		}
 	}
-	ptr[i] = NULL;
-	return (ptr);
+	hlp.ptr[hlp.i] = NULL;
+	return (hlp.ptr);
 }

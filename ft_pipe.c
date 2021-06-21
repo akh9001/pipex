@@ -1,16 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pipe_bonus.c                                    :+:      :+:    :+:   */
+/*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/18 15:06:45 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/21 18:44:13 by akhalidy         ###   ########.fr       */
+/*   Created: 2021/06/21 18:03:51 by akhalidy          #+#    #+#             */
+/*   Updated: 2021/06/21 18:41:10 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex_bonus.h"
+#include "pipex.h"
+
+void	ft_is_file(int *fd, char *file, int type, int option)
+{
+	if (type == RD)
+		*fd = open(file, O_RDONLY);
+	else if (type == WR)
+		*fd = open(file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	else if (type == APND)
+		*fd = open(file, O_CREAT | O_APPEND | O_WRONLY, 0644);
+	if (*fd == -1)
+	{
+		ft_print_error(file, NULL);
+		if (option)
+			exit(1);
+	}
+}
 
 void	ft_fork_pipe(int *io, char **args, char **envp, int *pid)
 {
@@ -30,24 +46,6 @@ void	ft_fork_pipe(int *io, char **args, char **envp, int *pid)
 		close(io[0]);
 	if (io[1] != 1)
 		close(io[1]);
-}
-
-void	ft_bzero(void *s, size_t n)
-{
-	int	t;
-	int	r;
-	int	k;
-
-	if (n)
-	{
-		t = n / sizeof(long);
-		r = n % sizeof(long);
-		k = 0;
-		while (t--)
-			((long *)s)[k++] = 0;
-		while (r--)
-			((char *)s)[k * sizeof(long) + r] = 0;
-	}
 }
 
 int	ft_wait_loop(t_cmd	*cmds)
@@ -87,16 +85,4 @@ int	ft_pipe(t_data data, char **envp, int wr)
 	ft_is_file(&io[1], data.file2, wr, 1);
 	ft_fork_pipe(io, lst->args, envp, &lst->pid);
 	return (ft_wait_loop(data.cmds));
-}
-
-char	*ft_strdup(const char *s1)
-{
-	char	*str;
-	size_t	l;
-
-	l = ft_strlen(s1);
-	str = (char *)malloc(l + 1);
-	if (str)
-		ft_strlcpy(str, s1, l + 1);
-	return (str);
 }

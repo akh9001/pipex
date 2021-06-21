@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 13:27:15 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/18 18:47:58 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/20 19:45:13 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@ t_cmd	*ft_lstnew(char **args)
 	if (!new)
 		return (NULL);
 	new->args = args;
-	new->in = -18;
-	new->out = -18;
 	new->next = NULL;
 	return (new);
 }
@@ -63,4 +61,20 @@ int	ft_lstsize(t_cmd *lst)
 		lst = lst->next;
 	}
 	return (i);
+}
+
+void	ft_cmds_free(t_cmd **head)
+{
+	t_cmd	*current;
+	t_cmd	*next;
+
+	current = *head;
+	while (current)
+	{
+		next = current->next;
+		ft_free(current->args);
+		free(current);
+		current = next;
+	}
+	*head = NULL;
 }

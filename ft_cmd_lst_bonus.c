@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 13:27:15 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/19 19:17:21 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/21 19:29:42 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,19 +50,6 @@ t_cmd	*ft_lstnew(char **args)
 	return (new);
 }
 
-int	ft_lstsize(t_cmd *lst)
-{
-	int	i;
-
-	i = 0;
-	while (lst)
-	{
-		i++;
-		lst = lst->next;
-	}
-	return (i);
-}
-
 char	*ft_strchr(const char *s, int c)
 {
 	int		i;
@@ -79,4 +66,20 @@ char	*ft_strchr(const char *s, int c)
 		i++;
 	}
 	return (NULL);
+}
+
+void	ft_cmds_free(t_cmd **head)
+{
+	t_cmd	*current;
+	t_cmd	*next;
+
+	current = *head;
+	while (current)
+	{
+		next = current->next;
+		ft_free(current->args);
+		free(current);
+		current = next;
+	}
+	*head = NULL;
 }
