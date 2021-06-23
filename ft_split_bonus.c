@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 12:44:47 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/21 18:37:24 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/22 14:21:26 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ char	**ft_free(char **ptr)
 	int	i;
 
 	i = 0;
+	if (!ptr)
+		return (NULL);
 	while (ptr[i])
 		free(ptr[i++]);
 	free(ptr);

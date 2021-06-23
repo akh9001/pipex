@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/18 15:16:46 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/21 18:59:13 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/22 14:46:52 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,8 @@ void				ft_is_file(int *fd, char *file, int type, int option);
 void				ft_exec_cmd(char **envp, char **args);
 void				ft_lst_free(t_list **head);
 void				ft_cmds_free(t_cmd **head);
+int					get_next_line(int fd, char **line);
+void				ft_safe_free(void *str);
+int					ft_check_tmp(char *tmp, char **line, char **re, char *buf);
 
 #endif

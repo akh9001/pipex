@@ -6,7 +6,7 @@
 #    By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/14 20:40:57 by akhalidy          #+#    #+#              #
-#    Updated: 2021/06/21 18:59:44 by akhalidy         ###   ########.fr        #
+#    Updated: 2021/06/22 15:50:17 by akhalidy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,8 @@ SRCSB =	ft_cmd_lst_bonus.c \
 		ft_pipe_bonus.c \
 		ft_split_bonus.c \
 		main_bonus.c \
+		ft_gnl_bonus.c \
+		ft_gnl_nrm_bonus.c
 
 all:$(NAME)
 

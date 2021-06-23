@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/18 15:06:45 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/21 18:44:13 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/22 16:09:03 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,13 @@
 
 void	ft_fork_pipe(int *io, char **args, char **envp, int *pid)
 {
+	if (io[0] == -1)
+	{
+		*pid = -1;
+		return ;
+	}
 	*pid = fork();
-	if (!*pid && io[0] != -1)
+	if (!*pid)
 	{
 		dup2(io[1], 1);
 		dup2(io[0], 0);
@@ -56,7 +61,8 @@ int	ft_wait_loop(t_cmd	*cmds)
 
 	while (cmds)
 	{
-		waitpid(cmds->pid, &status, 0);
+		if (cmds->pid > 0)
+			waitpid(cmds->pid, &status, 0);
 		cmds = cmds->next;
 	}
 	return (WEXITSTATUS(status));
@@ -94,6 +100,7 @@ char	*ft_strdup(const char *s1)
 	char	*str;
 	size_t	l;
 
+	str = NULL;
 	l = ft_strlen(s1);
 	str = (char *)malloc(l + 1);
 	if (str)

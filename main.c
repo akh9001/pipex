@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 10:51:45 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/21 18:07:05 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/22 19:53:25 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,13 @@ t_data	ft_fil_struct(int argc, char **argv)
 	while (++i <= argc)
 	{
 		split = ft_split(argv[i], ' ');
+		if (!split[0] && !argv[i][0])
+		{
+			free(split);
+			split = (char **)malloc(2 * sizeof(char *));
+			split[0] = ft_strdup("");
+			split[1] = NULL;
+		}
 		ft_lstadd_back(&data.cmds, ft_lstnew(split));
 	}
 	data.file2 = argv[i];

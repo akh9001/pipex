@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 12:43:14 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/21 19:29:29 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/22 16:15:52 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ char	*ft_get_cmd_path(char *cmd, char *pathenv)
 	int			i;
 
 	i = 0;
+	if (!*cmd)
+		return (NULL);
 	split = ft_split(pathenv, ':');
 	slash_cmd = ft_strjoin("/", cmd);
 	while (split[i])
@@ -27,14 +29,14 @@ char	*ft_get_cmd_path(char *cmd, char *pathenv)
 		path = ft_strjoin(split[i], slash_cmd);
 		if (open(path, O_RDONLY) > 0)
 		{
-			free(slash_cmd);
+			ft_safe_free(slash_cmd);
 			ft_free(split);
 			return (path);
 		}
-		free(path);
+		ft_safe_free(path);
 		i++;
 	}
-	free(slash_cmd);
+	ft_safe_free(slash_cmd);
 	ft_free(split);
 	return (NULL);
 }
@@ -48,21 +50,18 @@ void	ft_continue_exec(char *path, char **envp, char **args)
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(args[0], 2);
 		ft_putendl_fd(": command not found", 2);
+		exit(127);
 	}
 	else
 	{
-		id = fork();
-		if (!id)
-		{
-			execve(path, args, envp);
-			ft_putendl_fd(strerror(errno), 2);
-			exit(0);
-		}
-		else
-		{
-			wait(NULL);
-			free(path);
-		}
+		execve(path, args, envp);
+		ft_putendl_fd(strerror(errno), 2);
+		if (errno == 21)
+			exit(1);
+		if (errno == 13)
+			exit(126);
+		if (errno == 2)
+			exit(127);
 	}
 }
 
@@ -108,6 +107,12 @@ void	ft_exec_cmd(char **envp, char **args)
 		path = ft_search_path(envp, args);
 	if (k)
 		ft_continue_exec(path, envp, args);
-	if (path)
-		free(path);
+	ft_safe_free(path);
+}
+
+void	ft_safe_free(void *str)
+{
+	if (str)
+		free(str);
+	str = NULL;
 }

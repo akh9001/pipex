@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/18 15:15:27 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/21 18:49:06 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/22 19:52:58 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,13 @@ t_data	ft_fil_struct(int argc, char **argv)
 	while (++i <= argc)
 	{
 		split = ft_split(argv[i], ' ');
+		if (!split[0] || !argv[i][0])
+		{
+			free(split);
+			split = (char **)malloc(2 * sizeof(char *));
+			split[0] = ft_strdup("");
+			split[1] = NULL;
+		}
 		ft_lstadd_back(&data.cmds, ft_lstnew(split));
 	}
 	data.file2 = argv[i];
@@ -69,20 +76,20 @@ int	ft_herdox(t_data data, char **envp)
 
 	line = NULL;
 	fd = open("/tmp/file", O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	line = malloc(2048);
 	while (1)
 	{
 		ft_putstr_fd("heredoc> ", 1);
-		ret = read(0, line, 2048);
-		line[ret] = 0;
-		if (!ft_strncmp(data.file1, line, ft_strlen(data.file1)))
+		get_next_line(0, &line);
+		if (!ft_strncmp(data.file1, line, ft_strlen(data.file1) + 1))
 		{
+			ft_safe_free(line);
 			close(fd);
 			break ;
 		}
-		write(fd, line, ret);
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		ft_safe_free(line);
 	}
-	free(line);
 	ret = ft_pipe(data, envp, APND);
 	unlink("/tmp/file");
 	return (ret);

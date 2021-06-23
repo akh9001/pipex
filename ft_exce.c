@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 12:43:14 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/21 19:23:27 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/21 20:30:03 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ char	*ft_get_cmd_path(char *cmd, char *pathenv)
 	int			i;
 
 	i = 0;
+	if (!*cmd)
+		return (NULL);
 	split = ft_split(pathenv, ':');
 	slash_cmd = ft_strjoin("/", cmd);
 	while (split[i])
@@ -58,13 +60,11 @@ void	ft_continue_exec(char *path, char **envp, char **args)
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(args[0], 2);
 		ft_putendl_fd(": command not found", 2);
-		system("leaks pipex");
 		exit(127);
 	}
 	else
 	{
 		execve(path, args, envp);
-		ft_putendl_fd(strerror(errno), 2);
 		if (errno == 21)
 			exit(1);
 		if (errno == 13)
@@ -74,7 +74,7 @@ void	ft_continue_exec(char *path, char **envp, char **args)
 	}
 }
 
-char	ft_search_path(char **envp, char **args)
+char	*ft_search_path(char **envp, char **args)
 {
 	t_list	*pathenv;
 	t_list	*envl;

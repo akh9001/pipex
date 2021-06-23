@@ -30,8 +30,10 @@ void	ft_is_file(int *fd, char *file, int type, int option)
 
 void	ft_fork_pipe(int *io, char **args, char **envp, int *pid)
 {
+	if (io[0] == -1)
+		return ;
 	*pid = fork();
-	if (!*pid && io[0] != -1)
+	if (!*pid)
 	{
 		dup2(io[1], 1);
 		dup2(io[0], 0);

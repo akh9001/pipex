@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/13 13:51:17 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/19 18:25:20 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/22 15:47:15 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	**ft_list_to_arr(t_list *lst)
 		str[i] = ft_strjoin(lst->env, "=");
 		pfree = str[i];
 		str[i] = ft_strjoin(str[i], lst->value);
-		free(pfree);
+		ft_safe_free(pfree);
 		lst = lst->next;
 		i++;
 	}
@@ -47,7 +47,7 @@ t_list	*ft_arr_to_list(char **str)
 	{
 		split = ft_split(str[i], '=');
 		ft_envl_add_back(&lst, ft_envl_new(split[0], split[1]));
-		free(split);
+		ft_safe_free(split);
 		i++;
 	}
 	return (lst);

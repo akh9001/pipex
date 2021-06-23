@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/13 13:52:51 by akhalidy          #+#    #+#             */
-/*   Updated: 2021/06/20 19:35:28 by akhalidy         ###   ########.fr       */
+/*   Updated: 2021/06/22 14:09:47 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,10 @@ void	ft_lst_free(t_list **head)
 	while (current)
 	{
 		next = current->next;
-		free(current->env);
-		free(current->value);
+		if (current->env)
+			free(current->env);
+		if (current->value)
+			free(current->value);
 		free(current);
 		current = next;
 	}
